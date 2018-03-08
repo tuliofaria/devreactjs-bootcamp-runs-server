@@ -45,7 +45,7 @@ This endpoint can be used to sign-up and for admin. If a new user is trying to c
 	"name": "Tulio Faria",
 	"email": "tuliofaria@gmail.com",
 	"passwd": "123456",
-	"role": "admni",
+	"role": "admin",
 	"unit": "metric",
 	"timezone": "America/Sao_Paulo"
 }
