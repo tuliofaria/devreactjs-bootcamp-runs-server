@@ -1,6 +1,6 @@
 const get = ({ db }) => async(req, res) => {
   const { user } = res.locals
-  if (user.role === 'admin') {
+  if (user.role === 'admin' && req.query.admin) {
     const runs = await db.select('*').from('runs').leftJoin('users', 'users.id', 'runs.user_id')
     res.send({
       data: runs,
