@@ -1,7 +1,15 @@
 const get = ({ db }) => async(req, res) => {
   const { user } = res.locals
   if (user.role === 'admin' && req.query.admin) {
-    const runs = await db.select('*').from('runs').leftJoin('users', 'users.id', 'runs.user_id')
+    const runs = await db.select({
+      id:'runs.id',
+      distance: 'runs.distance',
+      duration: 'runs.duration',
+      created: 'runs.created',
+      friendly_name: 'runs.friendly_name',
+      name: 'users.name',
+      email: 'users.email'
+    }).from('runs').leftJoin('users', 'users.id', 'runs.user_id')
     res.send({
       data: runs,
       pagination: {
@@ -33,7 +41,7 @@ const remove = ({ db }) => async(req, res) => {
   const { user } = res.locals
   const { id } = req.params
   const run = await db('runs').select().where('id', id)
-
+console.log(user)
   if ((run.length === 0) || (user.role === 'user' && run[0].user_id !== user.id)) {
     res.status(401)
     res.send({ error: true })
