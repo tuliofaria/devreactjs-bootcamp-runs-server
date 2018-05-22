@@ -25,8 +25,9 @@ const get = ({ db }) => async(req, res) => {
     res.send(users)
   }
 }
-const getMe = () => (req, res) => {
-  res.send(res.locals.user)
+const getMe = ({ db }) => async(req, res) => {
+  const userDB = await db('users').select().where('id', res.locals.user.id)
+  res.send(userDB[0])
 }
 const getOne = ({ db }) => async(req, res) => {
   const { user } = res.locals
@@ -36,7 +37,7 @@ const getOne = ({ db }) => async(req, res) => {
     res.send({ error: true })
   } else {
     const userDB = await db('users').select().where('id', id)
-    res.send(userDB)
+    res.send(userDB[0])
   }
 }
 const remove = ({ db }) => async(req, res) => {
@@ -84,12 +85,13 @@ const update = ({ db }) => async(req, res) => {
   const updatedUser = req.body
   let { id } = req.params
   const userToUpdate = {
-    name: updatedUser.name,
-    // email: newUser.email, // avoid for now updating email
-    passwd: updatedUser.passwd,
-    unit: updatedUser.unit,
-    timezone: updatedUser.timezone
   }
+  const fields = ['name', 'passwd', 'unit', 'timezone']
+  fields.forEach(field => {
+    if(updatedUser[field]){
+      userToUpdate[field] = updatedUser[field]
+    }
+  })
   // creating new account - without token
   if (user.role === 'user' && user.id != id) {
     return res.send({ error: true, message: 'only admins can update any user.' })
