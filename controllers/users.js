@@ -86,12 +86,15 @@ const update = ({ db }) => async(req, res) => {
   let { id } = req.params
   const userToUpdate = {
   }
-  const fields = ['name', 'passwd', 'unit', 'timezone']
+  const fields = ['name', 'role', 'email', 'passwd', 'unit', 'timezone']
   fields.forEach(field => {
     if(updatedUser[field]){
       userToUpdate[field] = updatedUser[field]
     }
   })
+  if(user.role ==='user'){
+    userToUpdate['role'] = 'user'
+  }
   // creating new account - without token
   if (user.role === 'user' && user.id != id) {
     return res.send({ error: true, message: 'only admins can update any user.' })
